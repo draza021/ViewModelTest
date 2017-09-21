@@ -16,7 +16,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String NUMBER_OF_CLICKS = "20";
     private TextView tvClickCounter;
-    private Button btnClickMe;
+    private Button btnClickMe, btnReset;
     private int counter = 0;
     private LiveModel liveModel;
 
@@ -27,9 +27,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tvClickCounter = (TextView) findViewById(R.id.text_view_click_counter);
         btnClickMe = (Button) findViewById(R.id.btn_click_me);
+        btnReset = (Button) findViewById(R.id.btn_reset);
         liveModel = ViewModelProviders.of(this).get(LiveModel.class);
 
         btnClickMe.setOnClickListener(this);
+        btnReset.setOnClickListener(this);
         tvClickCounter.setText(String.valueOf(liveModel.getCount()));
 
         RxTextView.textChanges(tvClickCounter)
@@ -42,18 +44,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (liveModel.getCount() == 0) {
+        if (v.getId() == R.id.btn_click_me) {
             setCounter(liveModel);
-        } else {
-            counter = liveModel.getCount();
-            setCounter(liveModel);
+        } else if (v.getId() == R.id.btn_reset) {
+            resetCounter();
         }
     }
 
-    private void setCounter(LiveModel liveModel) {
-        counter++;
+    private void resetCounter() {
+        counter = 0;
         liveModel.setCount(counter);
         tvClickCounter.setText(String.valueOf(counter));
+    }
+
+    private void setCounter(LiveModel liveModel) {
+        if (liveModel.getCount() == 0) {
+            counter++;
+            liveModel.setCount(counter);
+            tvClickCounter.setText(String.valueOf(counter));
+        } else {
+            counter = liveModel.getCount();
+            counter++;
+            liveModel.setCount(counter);
+            tvClickCounter.setText(String.valueOf(counter));
+        }
     }
 
 }
