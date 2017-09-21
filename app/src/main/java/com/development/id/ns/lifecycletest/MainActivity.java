@@ -6,8 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.jakewharton.rxbinding2.widget.RxTextView;
+
+import java.util.Objects;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    private static final String NUMBER_OF_CLICKS = "20";
     private TextView tvClickCounter;
     private Button btnClickMe;
     private int counter = 0;
@@ -24,6 +31,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnClickMe.setOnClickListener(this);
         tvClickCounter.setText(String.valueOf(liveModel.getCount()));
+
+        RxTextView.textChanges(tvClickCounter)
+                .subscribe(charSequence -> {
+                    if (Objects.equals(charSequence.toString(), NUMBER_OF_CLICKS)) {
+                        Toast.makeText(this, "Clicks have reached: " + NUMBER_OF_CLICKS, Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     @Override
@@ -41,4 +55,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         liveModel.setCount(counter);
         tvClickCounter.setText(String.valueOf(counter));
     }
+
 }
